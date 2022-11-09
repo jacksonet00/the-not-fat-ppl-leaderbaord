@@ -81,7 +81,7 @@ const defaultData: FatPerson[] = [
     name: 'liza',
     daysCompleted: [
       2, 3, 6, 9,
-      16, 18, 20, 22
+      16, 18, 20, 22, 24
     ]
   },
   { name: 'sarah', daysCompleted: [] },
