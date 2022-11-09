@@ -9,7 +9,7 @@ import { SunIcon, MoonIcon } from '@chakra-ui/icons';
 const currentDay = 24;
 
 async function fetchData() {
-  const res = await fetch('http://localhost:3000/api/data', {
+  const res = await fetch('https://nfp-leaderboard.vercel.app/api/data', {
     cache: 'no-store'
   });
   return res.json();
@@ -41,7 +41,7 @@ export default function Home() {
   const { colorMode, toggleColorMode } = useColorMode();
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/data', {
+    fetch('http:///api/data', {
       cache: 'no-store'
     })
       .then((_data) => _data.json())
