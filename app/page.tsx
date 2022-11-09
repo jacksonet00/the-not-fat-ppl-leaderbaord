@@ -41,7 +41,7 @@ export default function Home() {
   const { colorMode, toggleColorMode } = useColorMode();
 
   useEffect(() => {
-    fetch('http:///api/data', {
+    fetch('https:///api/data', {
       cache: 'no-store'
     })
       .then((_data) => _data.json())
