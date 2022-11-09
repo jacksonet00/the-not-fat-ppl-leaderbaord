@@ -1,57 +1,94 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client';
+
+import { FatPerson } from "../pages/api/data";
+import styles from './page.module.css';
+import { Box, Button, ChakraProvider, Heading, Menu, MenuButton, Progress, Spinner, Text, useColorMode } from '@chakra-ui/react';
+import { useEffect, useState } from "react";
+import { SunIcon, MoonIcon } from '@chakra-ui/icons';
+
+const currentDay = 24;
+
+async function fetchData() {
+  const res = await fetch('http://localhost:3000/api/data', {
+    cache: 'no-store'
+  });
+  return res.json();
+}
+
+function getTotalDays(fatPerson: FatPerson) {
+  return fatPerson.daysCompleted.length;
+}
+
+function getCurrentStreak(fatPerson: FatPerson) {
+  if (!fatPerson.daysCompleted || fatPerson.daysCompleted[fatPerson.daysCompleted.length - 1] !== currentDay) {
+    return 0;
+  }
+  let streak = 1;
+  let curr = fatPerson.daysCompleted[fatPerson.daysCompleted.length - 1];
+  for (let i = fatPerson.daysCompleted.length - 2; i >= 0; i--) {
+    if (fatPerson.daysCompleted[i] === curr - 1) {
+      streak++;
+      curr = fatPerson.daysCompleted[i];
+    } else {
+      return streak;
+    }
+  }
+  return streak;
+}
 
 export default function Home() {
+  const [data, setData] = useState<FatPerson[] | null>(null);
+  const { colorMode, toggleColorMode } = useColorMode();
+
+  useEffect(() => {
+    fetch('http://localhost:3000/api/data', {
+      cache: 'no-store'
+    })
+      .then((_data) => _data.json())
+      .then((json) => setData(json));
+  }, []);
+
+  if (!data) {
+    return (
+      <Box w="100vw" h="100vh" alignItems="center" justifyContent="center" display="flex">
+        <Spinner
+          size='xl'
+        />
+      </Box>
+    );
+  }
+
+
   return (
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js 13!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://beta.nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js 13</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Explore the Next.js 13 playground.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates/next.js/app-directory?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>Deploy your Next.js site to a public URL with Vercel.</p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
+    <>
+      <Box position="absolute" top={0} right={0} padding={6}>
+        <Menu>
+          <MenuButton as={Button} onClick={toggleColorMode}>
+            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+          </MenuButton>
+        </Menu>
+      </Box>
+      <Box alignItems="center" justifyContent="center" display="flex" flexDirection="column">
+        <Box w={{ base: "95%", lg: 'lg' }} padding={4} alignItems="center" justifyContent="center" display="flex" >
+          <Heading size="2xl">🍏</Heading>
+        </Box>
+        <Box w={{ base: "95%", lg: 'lg' }} padding={4} alignItems="center" justifyContent="center" display="flex" >
+          <Heading size="2xl">the not fat ppl</Heading>
+        </Box>
+        <Box w={{ base: "95%", lg: 'lg' }} padding={4} alignItems="center" justifyContent="center" display="flex" >
+          <Heading size="md" textDecoration="underline">100 Day Challenge: Day #{currentDay + 1}</Heading>
+        </Box>
+        <Box w={{ base: "95%", lg: 'lg' }} padding={4}>
+          {data.sort((left: FatPerson, right: FatPerson) => (getTotalDays(right) - getTotalDays(left))).sort((left: FatPerson, right: FatPerson) => (getCurrentStreak(right) - getCurrentStreak(left))).map((fatPerson: FatPerson, idx: number) => (
+            <Box key={fatPerson.name} paddingTop={2} paddingBottom={2}>
+              <Text fontWeight="bold">{`${fatPerson.name[0].toUpperCase()}${fatPerson.name.slice(1).toLowerCase()}${idx === 0 ? ' 👑' : ''}`}</Text>
+              <Box>Current streak: {getCurrentStreak(fatPerson)} | Total Completions: {getTotalDays(fatPerson)}</Box>
+              <Progress colorScheme={colorMode === 'dark' ? 'orange' : 'yellow'} value={(getCurrentStreak(fatPerson) / currentDay) * 100} />
+              <Progress colorScheme="blue" value={(getTotalDays(fatPerson) / currentDay) * 100} />
+            </Box>
+          ))}
+        </Box>
+      </Box >
+    </>
   )
 }

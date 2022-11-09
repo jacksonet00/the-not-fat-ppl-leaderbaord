@@ -1,4 +1,8 @@
+'use client';
+
+import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import './globals.css'
+import theme from '../theme';
 
 export default function RootLayout({
   children,
@@ -12,7 +16,12 @@ export default function RootLayout({
         head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
       <head />
-      <body>{children}</body>
+      <body>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+        <ChakraProvider>
+          {children}
+        </ChakraProvider>
+      </body>
     </html>
   )
 }
