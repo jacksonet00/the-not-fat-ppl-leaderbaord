@@ -6,7 +6,7 @@ import { Box, Button, ChakraProvider, Heading, Menu, MenuButton, Progress, Spinn
 import { useEffect, useState } from "react";
 import { SunIcon, MoonIcon } from '@chakra-ui/icons';
 
-const currentDay = 24;
+const currentDay = 25;
 
 async function fetchData() {
   const res = await fetch('https://nfp-leaderboard.vercel.app/api/data', {
@@ -43,7 +43,7 @@ const defaultData: FatPerson[] = [
       0, 1, 2, 3, 4, 5, 6, 7,
       8, 9, 10, 11, 12, 13, 14, 15,
       16, 17, 18, 19, 20, 21, 22, 23,
-      24
+      24, 25
     ]
   },
   {
@@ -51,7 +51,7 @@ const defaultData: FatPerson[] = [
     daysCompleted: [
       1, 9, 10, 11, 12,
       14, 16, 18, 19, 20,
-      21, 24
+      21, 24, 25
     ]
   },
   {
@@ -74,7 +74,7 @@ const defaultData: FatPerson[] = [
     daysCompleted: [
       0, 1, 2, 3, 9, 10, 11,
       12, 14, 15, 16, 17, 18, 19,
-      20, 21, 22, 23, 24
+      20, 21, 22, 23, 24, 25
     ]
   },
   {
