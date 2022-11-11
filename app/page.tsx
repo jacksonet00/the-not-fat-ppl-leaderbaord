@@ -6,7 +6,7 @@ import { Box, Button, ChakraProvider, Heading, Menu, MenuButton, Progress, Spinn
 import { useEffect, useState } from "react";
 import { SunIcon, MoonIcon } from '@chakra-ui/icons';
 
-const currentDay = 25;
+const currentDay = 26;
 
 async function fetchData() {
   const res = await fetch('https://nfp-leaderboard.vercel.app/api/data', {
@@ -43,7 +43,7 @@ const defaultData: FatPerson[] = [
       0, 1, 2, 3, 4, 5, 6, 7,
       8, 9, 10, 11, 12, 13, 14, 15,
       16, 17, 18, 19, 20, 21, 22, 23,
-      24, 25
+      24, 25, 26
     ]
   },
   {
@@ -51,7 +51,7 @@ const defaultData: FatPerson[] = [
     daysCompleted: [
       1, 9, 10, 11, 12,
       14, 16, 18, 19, 20,
-      21, 24, 25
+      21, 24, 25, 26
     ]
   },
   {
@@ -74,14 +74,14 @@ const defaultData: FatPerson[] = [
     daysCompleted: [
       0, 1, 2, 3, 9, 10, 11,
       12, 14, 15, 16, 17, 18, 19,
-      20, 21, 22, 23, 24, 25
+      20, 21, 22, 23, 24, 25, 26
     ]
   },
   {
     name: 'liza',
     daysCompleted: [
       2, 3, 6, 9,
-      16, 18, 20, 22, 24
+      16, 18, 20, 22, 24, 26
     ]
   },
   { name: 'sarah', daysCompleted: [] },
@@ -90,7 +90,7 @@ const defaultData: FatPerson[] = [
     daysCompleted: [
       0, 1, 2, 3, 4, 6,
       8, 9, 12, 14, 16, 20,
-      22, 24
+      22, 24, 26
     ]
   }
 ];
@@ -120,7 +120,7 @@ export default function Home() {
 
   return (
     <>
-      <Box position="absolute" top={0} right={0} padding={6}>
+      <Box position="absolute" top={0} right={0} padding={4}>
         <Menu>
           <MenuButton as={Button} onClick={toggleColorMode}>
             {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
