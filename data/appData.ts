@@ -1,4 +1,6 @@
-import { FatPerson } from "../pages/api/data";
+import { FatPerson } from "../types/FatPerson";
+
+const fatPeople: string[] = ['jason','justin','ethan','katherine','ashlin','jackson','liza','sarah','tori'];
 
 export const appData: FatPerson[] = [
   {

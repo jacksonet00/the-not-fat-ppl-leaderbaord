@@ -1,0 +1,37 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model users {
+  id            Int           @id @default(autoincrement())
+  name          String
+  profile_photo String?
+  completions   completions[]
+}
+
+model challenges {
+  id          Int           @id @default(autoincrement())
+  name        String
+  start_date  DateTime
+  days        Int
+  completions completions[]
+}
+
+model completions {
+  id           Int         @id @default(autoincrement())
+  user         users?      @relation(fields: [user_id], references: [id])
+  user_id      Int
+  challenge    challenges? @relation(fields: [challenge_id], references: [id])
+  challenge_id Int
+  day          Int
+
+  @@index([user_id])
+  @@index([challenge_id])
+}
