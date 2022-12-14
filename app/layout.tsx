@@ -1,8 +1,5 @@
-'use client';
-
-import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
+import Header from "../components/Header";
 import './globals.css'
-import theme from '../theme';
 
 export default function RootLayout({
   children,
@@ -17,10 +14,10 @@ export default function RootLayout({
       */}
       <head />
       <body>
-        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-        <ChakraProvider>
+        <Header />
+        <div className="flex justify-center items-cente">
           {children}
-        </ChakraProvider>
+        </div>
       </body>
     </html>
   )

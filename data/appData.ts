@@ -1,6 +1,4 @@
-import { FatPerson } from "../pages/api/data";
-
-export const appData: FatPerson[] = [
+export const appData = [
   {
     name: 'jason',
     daysCompleted: [
