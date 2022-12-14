@@ -19,9 +19,13 @@ async function fetchChallenges() {
   return prisma.challenges.findMany();
 }
 
+
+// a string with the class types for a bootstrap button with a grey container
+const buttonClass = "bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center";
+
 function renderChallengeList(challenges: Challenge[]) {
   return challenges.map((challenge) => (
-    <div key={challenge.id}>
+    <div className="bg-slate-200 hover:bg-slate-400 text-zinc-900 font-bold py-2 px-4 rounded inline-flex items-center" key={challenge.id}>
       <Link href={`/leaderboard/${challenge.id}`}>{challenge.name}</Link>
     </div>
   ));
