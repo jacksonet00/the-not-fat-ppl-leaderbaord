@@ -1,3 +1,11 @@
+'use client';
+
+import { ChakraProvider, Spinner } from "@chakra-ui/react";
+
 export default function Loading() {
-    return <h1>Loading...</h1>;
+    return (
+        <ChakraProvider>
+            <Spinner />
+        </ChakraProvider>
+    );
 }

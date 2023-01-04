@@ -3,12 +3,10 @@ import Link from "next/link";
 import { db } from '../firebase';
 import { Challenge, genChallenge } from "../types";
 
-
 async function fetchChallenges() {
   const snapshot = await getDocs(query(collection(db, 'challenges')));
   return snapshot.docs.map(doc => genChallenge(doc));
 }
-
 
 function renderChallengeList(challenges: Challenge[]) {
   return challenges.map((challenge) => (

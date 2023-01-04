@@ -1,6 +1,5 @@
 import { DocumentData, DocumentSnapshot, Timestamp } from "firebase/firestore";
 
-
 export type Challenge = {
     id: string
     name: string
@@ -47,14 +46,14 @@ export function genParticipant(doc: DocumentSnapshot<DocumentData>): Participant
     }
 } 
 
-export type LeaderboardData = {
+export type LeaderboardEntryData = {
     participant: Participant
     totalCompletions: number
     currentStreak: number
     bestStreak: number
 }
 
-export function genLeaderboardData(participant: Participant, currentDay: number): LeaderboardData {
+export function genLeaderboardEntry(participant: Participant, currentDay: number): LeaderboardEntryData {
     const  { daysCompleted } = participant;
 
     function genCurrentStreak(daysCompleted: number[], currentDay: number) {

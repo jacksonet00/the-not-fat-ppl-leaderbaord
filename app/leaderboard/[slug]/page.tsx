@@ -1,7 +1,7 @@
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import LeaderboardEntry from "../../../components/LeaderboardEntry";
 import { db } from "../../../firebase";
-import { Challenge, genChallenge, genLeaderboardData, genParticipant, Participant } from "../../../types";
+import { Challenge, genChallenge, genLeaderboardEntry, genParticipant, Participant } from "../../../types";
 
 export type LeaderboardProps = {
     params: { slug: string; },
@@ -29,7 +29,7 @@ function renderLeaderboard(participants: Participant[], currentDay: number) {
         <LeaderboardEntry
             key={participant.id}
             index={index}
-            leaderboardData={genLeaderboardData(participant, currentDay)}
+            data={genLeaderboardEntry(participant, currentDay)}
             currentDay={currentDay} />);
 }
 

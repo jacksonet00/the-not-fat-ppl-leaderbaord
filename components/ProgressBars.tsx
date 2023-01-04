@@ -1,10 +1,10 @@
 'use client';
 
 import { ChakraProvider, Progress } from "@chakra-ui/react";
-import { LeaderboardData } from "../types";
+import { LeaderboardEntryData } from "../types";
 
 type ProgressBarsProps = {
-    leaderboardData: LeaderboardData;
+    leaderboardData: LeaderboardEntryData;
     currentDay: number;
 };
 

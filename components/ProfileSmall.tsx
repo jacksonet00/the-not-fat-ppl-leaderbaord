@@ -1,7 +1,7 @@
-import { LeaderboardData } from "../types";
+import { LeaderboardEntryData } from "../types";
 
 export type ProfileProps = {
-    leaderboardData: LeaderboardData;
+    leaderboardData: LeaderboardEntryData;
     crown: boolean;
 };
 

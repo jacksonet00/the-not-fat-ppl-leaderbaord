@@ -1,20 +1,21 @@
-import { LeaderboardData } from "../types";
+import { LeaderboardEntryData } from "../types";
 import ProfileSmall from "./ProfileSmall";
 import ProgressBars from "./ProgressBars";
 
-export default function LeaderboardEntry(props: {
-    leaderboardData: LeaderboardData,
-    index: number,
+type LeaderboardEntryProps = {
+    data: LeaderboardEntryData;
+    index: number;
     currentDay: number;
-}) {
-    const { leaderboardData, index, currentDay } = props;
+};
+
+export default function LeaderboardEntry({ data, index, currentDay }: LeaderboardEntryProps) {
     return (
         <div className="pb-4 h-20 flex flex-col w-80 mb-12">
             <div>
                 <div className="mb-4">
-                    <ProfileSmall leaderboardData={leaderboardData} crown={index === 0} />
+                    <ProfileSmall leaderboardData={data} crown={index === 0} />
                 </div>
-                <ProgressBars leaderboardData={leaderboardData} currentDay={currentDay} />
+                <ProgressBars leaderboardData={data} currentDay={currentDay} />
             </div>
         </div>
     );

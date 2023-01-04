@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { DocumentData, getFirestore, QueryDocumentSnapshot, QuerySnapshot } from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore';
 
-export const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyAskwc5O0P8cqVSvYEvLFb_1EOUUypDr1s",
   authDomain: "tnfp-39b40.firebaseapp.com",
   projectId: "tnfp-39b40",
