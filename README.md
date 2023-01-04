@@ -4,7 +4,7 @@ an app for some fat friends to track workouts with iMessage, [check it out](http
 
 ## modules
 
-- `app` - Next.js 13 server side rendered web app)
+- `app` - Next.js 13 server side rendered web app
 - `components` - composable web elements for `app`
 - `firebase` - exports initialized app and db
 - `firestore-uploader` - python connection to firebase admin sdk for data upload
