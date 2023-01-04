@@ -1,6 +1,6 @@
 # the not fat ppl
 
-an app for some fat friends to track workouts with iMessage
+an app for some fat friends to track workouts with iMessage, [check it out](https://nfp-leaderboard.vercel.app/)!
 
 ## modules
 
