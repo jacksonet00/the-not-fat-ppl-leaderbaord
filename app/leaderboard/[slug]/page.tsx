@@ -29,7 +29,8 @@ function renderLeaderboard(participants: Participant[], currentDay: number) {
         <LeaderboardEntry
             key={participant.id}
             index={index}
-            leaderboardData={genLeaderboardData(participant, currentDay)} />);
+            leaderboardData={genLeaderboardData(participant, currentDay)}
+            currentDay={currentDay} />);
 }
 
 export default async function Leaderboard({ params }: LeaderboardProps) {
