@@ -1,11 +1,11 @@
-import { LeaderboardData } from "../types/LeaderboardData";
+import { LeaderboardData } from "../types";
 
 export type ProfileProps = {
-    record: LeaderboardData;
+    leaderboardData: LeaderboardData;
     crown: boolean;
 };
 
-export default function ProfileSmall({ record, crown }: ProfileProps) {
+export default function ProfileSmall({ leaderboardData, crown }: ProfileProps) {
     return (
         <div className="bg-sky-50 w-lg rounded-md flex flex-row justify-start items-center p-2">
             {/* <picture>
@@ -13,11 +13,11 @@ export default function ProfileSmall({ record, crown }: ProfileProps) {
                 <img className="rounded-full h-12 w-12 mr-4" src={record.user.profile_photo ? record.user.profile_photo! : ""} alt={`profile photo for ${record.user.name}`} />
             </picture> */}
             <div className="flex flex-col">
-                <h1 className="font-bold">{record.user.name}{`${crown ? ' 👑' : ''}`}</h1>
+                <h1 className="font-bold">{leaderboardData.participant.name}{`${crown ? ' 👑' : ''}`}</h1>
                 <div className="flex flex-row">
-                    {record.currentStreak > 0 ? <h1 className="font-bold mr-2">🔥 x {record.currentStreak}{`${record.currentStreak === record.bestStreak ? ' 🏆' : ''}`}</h1> : <></>}
-                    {record.currentStreak !== record.bestStreak && <h1 className="font-bold mr-2">🏅 {record.bestStreak}</h1>}
-                    <h1 className="font-bold mr-2">✅ {record.totalCompletions}</h1>
+                    {leaderboardData.currentStreak > 0 ? <h1 className="font-bold mr-2">🔥 x {leaderboardData.currentStreak}{`${leaderboardData.currentStreak === leaderboardData.bestStreak ? ' 🏆' : ''}`}</h1> : <></>}
+                    {leaderboardData.currentStreak !== leaderboardData.bestStreak && <h1 className="font-bold mr-2">🏅 {leaderboardData.bestStreak}</h1>}
+                    <h1 className="font-bold mr-2">✅ {leaderboardData.totalCompletions}</h1>
                 </div>
             </div>
 

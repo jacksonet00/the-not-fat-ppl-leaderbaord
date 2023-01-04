@@ -1,5 +1,5 @@
 import Header from "../components/Header";
-import './globals.css'
+import './globals.css';
 
 export default function RootLayout({
   children,
@@ -15,7 +15,7 @@ export default function RootLayout({
       <head />
       <body>
         <Header />
-        <div className="flex justify-center items-cente">
+        <div className="flex justify-center items-center">
           {children}
         </div>
       </body>

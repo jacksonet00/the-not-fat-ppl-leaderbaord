@@ -1,54 +1,55 @@
-import { PrismaClient } from "@prisma/client";
-import Record from "../../../components/Record";
-import { Completion } from "../../../types/Completion";
-import { LeaderboardData } from "../../../types/LeaderboardData";
-import { genLeaderboardData } from "../../../util/genLeaderboardData";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import LeaderboardEntry from "../../../components/LeaderboardEntry";
+import { db } from "../../../firebase";
+import { Challenge, genChallenge, genLeaderboardData, genParticipant, Participant } from "../../../types";
 
 export type LeaderboardProps = {
     params: { slug: string; },
     searchParams: { id: string; },
 };
 
-async function fetchCompletions(challengeId: string): Promise<Completion[]> {
-    const prisma = new PrismaClient();
-    const completions: Completion[] = await prisma.completions.findMany({
-        where: {
-            challenge_id: Number(challengeId),
-        },
-        include: {
-            challenge: true,
-            user: true,
-        }
-    });
-    return completions;
-}
-
-function renderRecords(records: LeaderboardData[]) {
-    return records.map((record, index) => (
-        <div key={record.user.id}>
-            <Record record={record} index={index} />
-        </div>
-    ));
-}
-
 function daysBetween(date: Date) {
     return Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24));
 }
 
+async function fetchChallenge(challengeId: string): Promise<Challenge> {
+    const snapshot = await getDoc(doc(db, 'challenges', challengeId));
+    return genChallenge(snapshot);
+}
+
+async function fetchParticipants(challengeId: string): Promise<Participant[]> {
+    const snapshot = await getDocs(
+        query(collection(db, 'participants'),
+            where('challengeId', '==', challengeId)));
+    return snapshot.docs.map(doc => genParticipant(doc));
+}
+
+function renderLeaderboard(participants: Participant[], currentDay: number) {
+    return participants.map((participant, index) =>
+        <LeaderboardEntry
+            key={participant.id}
+            index={index}
+            leaderboardData={genLeaderboardData(participant, currentDay)} />);
+}
+
 export default async function Leaderboard({ params }: LeaderboardProps) {
     const { slug } = params;
-    const completions = await fetchCompletions(slug);
+    const challengeId = slug;
 
-    let currentDay = daysBetween(completions[0].challenge!.start_date);
-    if (currentDay >= completions[0].challenge!.days) {
-        currentDay = completions[0].challenge!.days - 1;
+    const challenge = await fetchChallenge(challengeId);
+    const participants = await fetchParticipants(challengeId);
+
+    // let currentDay = daysBetween(challenge!.startDate);
+    let currentDay = 79;
+    if (currentDay >= challenge!.dayCount) {
+        currentDay = challenge!.dayCount - 1;
     }
 
     return (
         <div className="flex items-center justify-center flex-col">
-            <h1 className="font-bold underline mb-8">{completions && completions[0].challenge!.name}: Day #{currentDay + 1}</h1>
+            <h1 className="font-bold underline mb-8">{challenge!.name}: Day #{currentDay + 2}</h1>
             <div className="w-80 flex flex-col justify-start">
-                {renderRecords(genLeaderboardData(completions, currentDay))}
+                {renderLeaderboard(participants, currentDay)}
             </div>
         </div>
     );

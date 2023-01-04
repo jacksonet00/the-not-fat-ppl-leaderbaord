@@ -1,10 +1,12 @@
-import { PrismaClient } from "@prisma/client";
+import { collection, getDocs, query } from "firebase/firestore";
 import Link from "next/link";
-import { Challenge } from "../types/Challenge";
+import { db } from '../firebase';
+import { Challenge, genChallenge } from "../types";
+
 
 async function fetchChallenges() {
-  const prisma = new PrismaClient();
-  return prisma.challenges.findMany();
+  const snapshot = await getDocs(query(collection(db, 'challenges')));
+  return snapshot.docs.map(doc => genChallenge(doc));
 }
 
 
