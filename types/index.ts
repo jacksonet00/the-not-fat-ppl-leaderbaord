@@ -99,3 +99,33 @@ export function genLeaderboardEntry(participant: Participant, currentDay: number
         bestStreak: genBestStreak(daysCompleted, currentDay),
     }
 }
+
+export function compareLeaderboardEntries(a: LeaderboardEntryData, b: LeaderboardEntryData) {
+    if (a.currentStreak - a.currentStreak > 0) {
+        return -1;
+    }
+
+    else if (b.currentStreak - a.currentStreak > 0) {
+        return 1;
+    }
+
+    else if (a.bestStreak - b.bestStreak > 0) {
+        return -1;
+    }
+
+    else if (b.bestStreak - a.bestStreak > 0) {
+        return 1;
+    }
+
+    else if (a.totalCompletions - b.totalCompletions > 0) {
+        return -1;
+    }
+
+    else if (b.totalCompletions - a.totalCompletions > 0) {
+        return 1;
+    }
+
+    else {
+        return 0;
+    }
+}

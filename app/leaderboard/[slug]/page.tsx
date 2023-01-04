@@ -1,7 +1,7 @@
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import LeaderboardEntry from "../../../components/LeaderboardEntry";
 import { db } from "../../../firebase";
-import { Challenge, genChallenge, genLeaderboardEntry, genParticipant, Participant } from "../../../types";
+import { Challenge, compareLeaderboardEntries, genChallenge, genLeaderboardEntry, genParticipant, Participant } from "../../../types";
 
 export type LeaderboardProps = {
     params: { slug: string; },
@@ -25,12 +25,19 @@ async function fetchParticipants(challengeId: string): Promise<Participant[]> {
 }
 
 function renderLeaderboard(participants: Participant[], currentDay: number) {
-    return participants.map((participant, index) =>
-        <LeaderboardEntry
-            key={participant.id}
-            index={index}
-            data={genLeaderboardEntry(participant, currentDay)}
-            currentDay={currentDay} />);
+    const leaderboardEntries =
+        participants.map(participant => genLeaderboardEntry(participant, currentDay));
+
+    return leaderboardEntries
+        .sort(compareLeaderboardEntries)
+        .map((entry, index) => (
+            <LeaderboardEntry
+                key={entry.participant.id}
+                index={index}
+                data={entry}
+                currentDay={currentDay}
+            />
+        ));
 }
 
 export default async function Leaderboard({ params }: LeaderboardProps) {
