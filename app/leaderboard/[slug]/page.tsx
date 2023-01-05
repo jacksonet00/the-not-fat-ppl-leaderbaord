@@ -54,7 +54,7 @@ export default async function Leaderboard({ params }: LeaderboardProps) {
 
     return (
         <div className="flex items-center justify-center flex-col">
-            <h1 className="font-bold underline mb-8">{challenge!.name}: Day #{currentDay + 2}</h1>
+            <h1 className="font-bold underline mb-8">{challenge!.name}: Day #{currentDay + 1}</h1>
             <div className="w-80 flex flex-col justify-start">
                 {renderLeaderboard(participants, currentDay)}
             </div>
