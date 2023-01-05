@@ -12,6 +12,7 @@ export default function LeaderboardEntry({ data, index, currentDay }: Leaderboar
     const bestStreakLength = data.bestStreakLength();
     const currentStreak = data.currentStreak();
     const totalCompletions = data.totalCompletions();
+
     return (
         <div className="pb-4 h-20 flex flex-col w-80 mb-12">
             <div>

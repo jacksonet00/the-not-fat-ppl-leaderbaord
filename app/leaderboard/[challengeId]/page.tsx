@@ -2,16 +2,12 @@ import { collection, doc, getDoc, getDocs, query, where } from "firebase/firesto
 import LeaderboardEntry from "../../../components/LeaderboardEntry";
 import { db } from "../../../firebase";
 import { Challenge, LeaderboardEntryData, Participant } from "../../../types";
-import { genKey } from "../../../util";
+import { daysBetween, genKey } from "../../../util";
 
 export type LeaderboardProps = {
-    params: { slug: string; },
+    params: { challengeId: string; },
     searchParams: { id: string; },
 };
-
-function daysBetween(date: Date) {
-    return Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-}
 
 async function fetchChallenge(challengeId: string): Promise<Challenge> {
     const snapshot = await getDoc(doc(db, 'challenges', challengeId));
@@ -42,8 +38,7 @@ function renderLeaderboard(participants: Participant[], currentDay: number) {
 }
 
 export default async function Leaderboard({ params }: LeaderboardProps) {
-    const { slug } = params;
-    const challengeId = slug;
+    const { challengeId } = params;
 
     const challenge = await fetchChallenge(challengeId);
     const participants = await fetchParticipants(challengeId);
@@ -56,7 +51,7 @@ export default async function Leaderboard({ params }: LeaderboardProps) {
     return (
         <div className="flex items-center justify-center flex-col">
             <h1 className="font-bold underline mb-8">{challenge!.name}: Day #{currentDay + 1}</h1>
-            <div className="w-80 flex flex-col justify-start">
+            <div className="w-80 flex flex-col justify-start mb-10">
                 {renderLeaderboard(participants, currentDay)}
             </div>
         </div>
