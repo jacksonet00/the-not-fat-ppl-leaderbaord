@@ -45,13 +45,13 @@ export default function ProfileSmall({
             </picture> */}
             <div className="flex flex-col">
                 <div className="flex flex-row">
-                    <h1 className="font-bold mr-2">{participantName}</h1>
-                    <h1 className="font-bold relative bottom-0.5">{`${crown ? '👑' : ''}`}</h1>
+                    <h1 className="mr-2">{participantName}</h1>
+                    <h1 className="relative bottom-0.5">{`${crown ? '👑' : ''}`}</h1>
                 </div>
                 <div className="flex flex-row">
-                    {currentStreakLength > 0 ? <h1 className="font-bold mr-2">{renderStreakIcon()}</h1> : <></>}
-                    {currentStreakLength !== bestStreakLength && <h1 className="font-bold mr-2">🏅 {bestStreakLength}</h1>}
-                    <h1 className="font-bold mr-2">✅ {totalCompletions}</h1>
+                    {currentStreakLength > 0 ? <h1 className="mr-2">{renderStreakIcon()}</h1> : <></>}
+                    {currentStreakLength !== bestStreakLength && <h1 className="mr-2">🏅x {bestStreakLength}</h1>}
+                    <h1 className="mr-2">✅ x {totalCompletions}</h1>
                 </div>
             </div>
 
