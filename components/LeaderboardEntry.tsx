@@ -9,13 +9,28 @@ type LeaderboardEntryProps = {
 };
 
 export default function LeaderboardEntry({ data, index, currentDay }: LeaderboardEntryProps) {
+    const bestStreakLength = data.bestStreakLength();
+    const currentStreak = data.currentStreak();
+    const totalCompletions = data.totalCompletions();
     return (
         <div className="pb-4 h-20 flex flex-col w-80 mb-12">
             <div>
                 <div className="mb-4">
-                    <ProfileSmall leaderboardData={data} crown={index === 0} />
+                    <ProfileSmall
+                        bestStreakLength={bestStreakLength}
+                        currentStreakIncludesToday={currentStreak.includesToday}
+                        currentStreakLength={currentStreak.length}
+                        participantName={data.getParticipantName()}
+                        totalCompletions={totalCompletions}
+                        crown={index === 0}
+                    />
                 </div>
-                <ProgressBars leaderboardData={data} currentDay={currentDay} />
+                <ProgressBars
+                    bestStreakLength={bestStreakLength}
+                    currentStreakLength={currentStreak.length}
+                    totalCompletions={totalCompletions}
+                    currentDay={currentDay}
+                />
             </div>
         </div>
     );

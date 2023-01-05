@@ -1,11 +1,11 @@
 import { collection, getDocs, query } from "firebase/firestore";
 import Link from "next/link";
 import { db } from '../firebase';
-import { Challenge, genChallenge } from "../types";
+import { Challenge } from "../types";
 
 async function fetchChallenges() {
   const snapshot = await getDocs(query(collection(db, 'challenges')));
-  return snapshot.docs.map(doc => genChallenge(doc));
+  return snapshot.docs.map(doc => new Challenge(doc));
 }
 
 function renderChallengeList(challenges: Challenge[]) {

@@ -1,7 +1,8 @@
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import LeaderboardEntry from "../../../components/LeaderboardEntry";
 import { db } from "../../../firebase";
-import { Challenge, compareLeaderboardEntries, genChallenge, genLeaderboardEntry, genParticipant, Participant } from "../../../types";
+import { Challenge, LeaderboardEntryData, Participant } from "../../../types";
+import { genKey } from "../../../util";
 
 export type LeaderboardProps = {
     params: { slug: string; },
@@ -14,25 +15,25 @@ function daysBetween(date: Date) {
 
 async function fetchChallenge(challengeId: string): Promise<Challenge> {
     const snapshot = await getDoc(doc(db, 'challenges', challengeId));
-    return genChallenge(snapshot);
+    return new Challenge(snapshot);
 }
 
 async function fetchParticipants(challengeId: string): Promise<Participant[]> {
     const snapshot = await getDocs(
         query(collection(db, 'participants'),
             where('challengeId', '==', challengeId)));
-    return snapshot.docs.map(doc => genParticipant(doc));
+    return snapshot.docs.map(doc => new Participant(doc));
 }
 
 function renderLeaderboard(participants: Participant[], currentDay: number) {
     const leaderboardEntries =
-        participants.map(participant => genLeaderboardEntry(participant, currentDay));
+        participants.map(participant => new LeaderboardEntryData(participant, currentDay));
 
     return leaderboardEntries
-        .sort(compareLeaderboardEntries)
+        .sort(LeaderboardEntryData.compare)
         .map((entry, index) => (
             <LeaderboardEntry
-                key={entry.participant.id}
+                key={genKey()}
                 index={index}
                 data={entry}
                 currentDay={currentDay}
