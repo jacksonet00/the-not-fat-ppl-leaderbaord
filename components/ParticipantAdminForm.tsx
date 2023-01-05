@@ -3,19 +3,19 @@
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
-interface CheckButtonProps {
+interface ParticipantAdminFormProps {
     participantId: string;
     participantName: string;
     daysCompleted: number[];
     currentDay: number;
 }
 
-export default function CheckButton({
+export default function ParticipantAdminForm({
     participantId,
     participantName,
     daysCompleted,
     currentDay
-}: CheckButtonProps) {
+}: ParticipantAdminFormProps) {
     async function toggleCompletion() {
         if (daysCompleted.at(-1) !== currentDay) {
             await setDoc(doc(db, 'participants', participantId), {
@@ -33,8 +33,8 @@ export default function CheckButton({
     }
 
     return (
-        <div className="mb-2 bg-slate-200 p-2 rounded-sm justify-center items-center align-middle">
-            <button className="text-center w-auto" onClick={toggleCompletion}>{`${daysCompleted.at(-1) === currentDay ? 'Remove' : 'Add'} ✅ for ${participantName}`}</button>
+        <div className={`mb-2 p-2 rounded-sm justify-center items-center align-middle${daysCompleted.at(-1) === currentDay ? ' bg-green-500' : ' bg-red-500'}`}>
+            <button className={`text-center w-auto`} onClick={toggleCompletion}>{`${daysCompleted.at(-1) === currentDay ? 'Remove' : 'Add'} ✅ for ${participantName}`}</button>
         </div>
     );
 }

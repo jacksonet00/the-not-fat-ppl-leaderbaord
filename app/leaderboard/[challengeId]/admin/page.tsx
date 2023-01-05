@@ -1,5 +1,5 @@
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
-import CheckButton from "../../../../components/CheckButton";
+import ParticipantAdminForm from "../../../../components/ParticipantAdminForm";
 import { db } from "../../../../firebase";
 import { Challenge, Participant } from "../../../../types";
 import { daysBetween, genKey } from "../../../../util";
@@ -20,14 +20,6 @@ async function fetchParticipants(challengeId: string): Promise<Participant[]> {
     return snapshot.docs.map(doc => new Participant(doc));
 }
 
-async function handleAddCheck(participant: Participant) {
-
-}
-
-async function handleRemoveCheck(participant: Participant) {
-
-}
-
 export default async function LeaderboardAdmin({ params }: LeaderboardAdminProps) {
     const { challengeId } = params;
 
@@ -42,7 +34,7 @@ export default async function LeaderboardAdmin({ params }: LeaderboardAdminProps
     return (
         <div className="flex flex-col">
             {participants.map(participant =>
-                <CheckButton
+                <ParticipantAdminForm
                     currentDay={currentDay}
                     daysCompleted={participant.daysCompleted}
                     participantId={participant.id}

@@ -124,6 +124,30 @@ export class LeaderboardEntryData {
         return this.participant.name;
     }
 
+    getLineChart(): number[] {
+        let graph = [];
+        let streak = 0;
+
+        let i = 0;
+        for (let j = 0; j < this.participant.daysCompleted.length; j++) {
+            while (i < this.participant.daysCompleted[j]) {
+            streak = 0;
+            graph.push(streak);
+            i++;
+            }
+            streak++;
+            graph.push(streak);
+            i++;
+        }
+
+        while (i < this.currentDay) {
+            graph.push(0);
+            i++;
+        }
+
+        return graph;
+    }
+
     constructor(participant: Participant, currentDay: number) {
         this.participant = participant;
         this.currentDay = currentDay;

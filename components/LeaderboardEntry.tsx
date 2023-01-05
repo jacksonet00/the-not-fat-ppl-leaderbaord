@@ -14,15 +14,16 @@ export default function LeaderboardEntry({ data, index, currentDay }: Leaderboar
     const totalCompletions = data.totalCompletions();
 
     return (
-        <div className="pb-4 h-20 flex flex-col w-80 mb-12">
+        <div className="pb-4 flex flex-col w-80 mb-4">
             <div>
-                <div className="mb-4">
+                <div className="mb-2">
                     <ProfileSmall
                         bestStreakLength={bestStreakLength}
                         currentStreakIncludesToday={currentStreak.includesToday}
                         currentStreakLength={currentStreak.length}
                         participantName={data.getParticipantName()}
                         totalCompletions={totalCompletions}
+                        lineChart={data.getLineChart()}
                         crown={index === 0}
                     />
                 </div>
