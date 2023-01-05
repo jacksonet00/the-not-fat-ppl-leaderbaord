@@ -49,17 +49,23 @@ export function genParticipant(doc: DocumentSnapshot<DocumentData>): Participant
 export type LeaderboardEntryData = {
     participant: Participant
     totalCompletions: number
-    currentStreak: number
+    currentStreak: { count: number, weak: boolean }
     bestStreak: number
 }
 
 export function genLeaderboardEntry(participant: Participant, currentDay: number): LeaderboardEntryData {
     const  { daysCompleted } = participant;
 
-    function genCurrentStreak(daysCompleted: number[], currentDay: number) {
+    function genCurrentStreak(daysCompleted: number[], currentDay: number): { count: number, weak: boolean} {
+        let weak = false;
         if (!daysCompleted || daysCompleted[daysCompleted.length - 1] < currentDay - 1) {
-            return 0;
+            return { count: 0, weak: true };
         }
+
+        if (daysCompleted[daysCompleted.length - 1] === currentDay - 1) {
+            weak = true;
+        }
+
         let streak = 1;
         let curr = daysCompleted[daysCompleted.length - 1];
         for (let i = daysCompleted.length - 2; i >= 0; i--) {
@@ -67,10 +73,10 @@ export function genLeaderboardEntry(participant: Participant, currentDay: number
             streak++;
             curr = daysCompleted[i];
             } else {
-            return streak;
+            return { count: streak, weak };
             }
         }
-        return streak;
+        return { count: streak, weak };
     }
 
     function genBestStreak(daysCompleted: number[], currentDay: number) {
@@ -82,12 +88,13 @@ export function genLeaderboardEntry(participant: Participant, currentDay: number
         let bestStreak = currentStreak;
         for (let i = 1; i < n; i++) {
             if (daysCompleted[i] == daysCompleted[i - 1] + 1) {
+            bestStreak = Math.max(currentStreak + 1, bestStreak);
             currentStreak++;
-            bestStreak = Math.max(currentStreak, bestStreak);
             } else {
             currentStreak = 0;
             }
         }
+        bestStreak = Math.max(currentStreak, bestStreak);
         return bestStreak;
     }
 
@@ -101,5 +108,5 @@ export function genLeaderboardEntry(participant: Participant, currentDay: number
 }
 
 export function compareLeaderboardEntries(a: LeaderboardEntryData, b: LeaderboardEntryData) {
-    return b.currentStreak - a.currentStreak || b.bestStreak - a.bestStreak || b.totalCompletions - a.totalCompletions;
+    return b.currentStreak.count - a.currentStreak.count || b.bestStreak - a.bestStreak || b.totalCompletions - a.totalCompletions;
 }

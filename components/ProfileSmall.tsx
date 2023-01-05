@@ -15,8 +15,8 @@ export default function ProfileSmall({ leaderboardData, crown }: ProfileProps) {
             <div className="flex flex-col">
                 <h1 className="font-bold">{leaderboardData.participant.name}{`${crown ? ' 👑' : ''}`}</h1>
                 <div className="flex flex-row">
-                    {leaderboardData.currentStreak > 0 ? <h1 className="font-bold mr-2">🔥 x {leaderboardData.currentStreak}{`${leaderboardData.currentStreak === leaderboardData.bestStreak ? ' 🏆' : ''}`}</h1> : <></>}
-                    {leaderboardData.currentStreak !== leaderboardData.bestStreak && <h1 className="font-bold mr-2">🏅 {leaderboardData.bestStreak}</h1>}
+                    {leaderboardData.currentStreak.count > 0 ? <h1 className="font-bold mr-2">🔥 x {leaderboardData.currentStreak.count}{`${leaderboardData.currentStreak.count === leaderboardData.bestStreak ? ' 🏆' : ''}`}</h1> : <></>}
+                    {leaderboardData.currentStreak.count !== leaderboardData.bestStreak && <h1 className="font-bold mr-2">🏅 {leaderboardData.bestStreak}</h1>}
                     <h1 className="font-bold mr-2">✅ {leaderboardData.totalCompletions}</h1>
                 </div>
             </div>
