@@ -57,7 +57,7 @@ export function genLeaderboardEntry(participant: Participant, currentDay: number
     const  { daysCompleted } = participant;
 
     function genCurrentStreak(daysCompleted: number[], currentDay: number) {
-        if (!daysCompleted || daysCompleted[daysCompleted.length - 1] !== currentDay) {
+        if (!daysCompleted || daysCompleted[daysCompleted.length - 1] < currentDay - 1) {
             return 0;
         }
         let streak = 1;
