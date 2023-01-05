@@ -1,112 +1,131 @@
 import { DocumentData, DocumentSnapshot, Timestamp } from "firebase/firestore";
 
-export type Challenge = {
-    id: string
-    name: string
-    startDate: Date
-    dayCount: number
+export interface ChallengeDocument {
+    name: string;
+    startDate: Timestamp;
+    dayCount: number;
 }
 
-export type ChallengeDocument = {
-    name: string
-    startDate: Timestamp
-    dayCount: number
+export class Challenge {
+    id: string;
+    name: string;
+    startDate: Date;
+    dayCount: number;
+
+    constructor(doc: DocumentSnapshot<DocumentData>) {
+        const { name, startDate, dayCount } = doc.data()! as ChallengeDocument;
+
+        this.id = doc.id;
+        this.name = name;
+        this.startDate = startDate.toDate();
+        this.dayCount = dayCount;
+    }
+};
+
+
+export interface ParticipantDocument {
+    name: string;
+    challengeId: string;
+    daysCompleted: number[];
 }
 
-export function genChallenge(doc: DocumentSnapshot<DocumentData>): Challenge {
-    const { name, startDate, dayCount } = doc.data()! as ChallengeDocument;
-    return {
-        id: doc.id,
-        name,
-        startDate: startDate.toDate(),
-        dayCount,
+export class Participant {
+    id: string;
+    name: string;
+    challengeId: string;
+    daysCompleted: number[];
+
+    constructor(doc: DocumentSnapshot<DocumentData>) {
+        const { name, challengeId, daysCompleted } = doc.data()! as ParticipantDocument;
+
+        this.id = doc.id;
+        this.name = name;
+        this.challengeId = challengeId;
+        this.daysCompleted = daysCompleted;
+    }
+};
+
+export class Streak {
+    length: number;
+    includesToday: boolean;
+
+    constructor() {
+        this.length = 0;
+        this.includesToday = false;
     }
 }
 
-export type Participant = {
-    id: string
-    name: string
-    challengeId: string
-    daysCompleted: number[]
-}
+export class LeaderboardEntryData {
+    private participant: Participant;
+    private currentDay: number;
 
-export type ParticipantDocument = {
-    name: string
-    challengeId: string
-    daysCompleted: number[]
-}
-
-export function genParticipant(doc: DocumentSnapshot<DocumentData>): Participant {
-    const { name, challengeId, daysCompleted } = doc.data()! as ParticipantDocument;
-    return {
-        id: doc.id,
-        name,
-        challengeId,
-        daysCompleted
+    static compare(a: LeaderboardEntryData, b: LeaderboardEntryData) {
+        return b.currentStreak().length - a.currentStreak().length ||
+                b.bestStreakLength() - a.bestStreakLength() ||
+                b.totalCompletions() - a.totalCompletions();
     }
-} 
+    
+    currentStreak(): Streak {
+        let streak = new Streak();
+        let { daysCompleted } = this.participant;
 
-export type LeaderboardEntryData = {
-    participant: Participant
-    totalCompletions: number
-    currentStreak: { count: number, weak: boolean }
-    bestStreak: number
-}
-
-export function genLeaderboardEntry(participant: Participant, currentDay: number): LeaderboardEntryData {
-    const  { daysCompleted } = participant;
-
-    function genCurrentStreak(daysCompleted: number[], currentDay: number): { count: number, weak: boolean} {
-        let weak = false;
-        if (!daysCompleted || daysCompleted[daysCompleted.length - 1] < currentDay - 1) {
-            return { count: 0, weak: true };
+        if (!daysCompleted.length || daysCompleted.at(-1)! < this.currentDay - 1) {
+            return streak;
         }
 
-        if (daysCompleted[daysCompleted.length - 1] === currentDay - 1) {
-            weak = true;
+        streak.length = 1;
+
+        if (daysCompleted.at(-1) == this.currentDay) {
+            streak.includesToday = true;
         }
 
-        let streak = 1;
-        let curr = daysCompleted[daysCompleted.length - 1];
-        for (let i = daysCompleted.length - 2; i >= 0; i--) {
-            if (daysCompleted[i] === curr - 1) {
-            streak++;
-            curr = daysCompleted[i];
-            } else {
-            return { count: streak, weak };
+        if (daysCompleted.length < 2) {
+            return streak;
+        }
+
+        for (let i = daysCompleted.length - 1; i > 0; i--) {
+            if (daysCompleted[i] === daysCompleted[i - 1] + 1) {
+                streak.length += 1;
+            }
+            else {
+                return streak;
             }
         }
-        return { count: streak, weak };
+
+        return streak;
     }
 
-    function genBestStreak(daysCompleted: number[], currentDay: number) {
-        if (!daysCompleted) {
+    bestStreakLength(): number {
+        let { daysCompleted } = this.participant;
+
+        if (!daysCompleted.length) {
             return 0;
         }
-        const n = daysCompleted.length;
-        let currentStreak = daysCompleted[n - 1] == currentDay ? 1 : 0;
-        let bestStreak = currentStreak;
-        for (let i = 1; i < n; i++) {
-            if (daysCompleted[i] == daysCompleted[i - 1] + 1) {
-            bestStreak = Math.max(currentStreak + 1, bestStreak);
-            currentStreak++;
-            } else {
-            currentStreak = 0;
+
+        let curr = 1;
+        let best = curr;
+        for (let i = daysCompleted.length - 1; i > 0; i--) {
+            if (daysCompleted[i] === daysCompleted[i - 1] + 1) {
+                curr += 1;
+                best = Math.max(curr, best);
+            }
+            else {
+                curr = 1;
             }
         }
-        bestStreak = Math.max(currentStreak, bestStreak);
-        return bestStreak;
+        return best;
     }
 
-
-    return {
-        participant,
-        totalCompletions: daysCompleted.length,
-        currentStreak: genCurrentStreak(daysCompleted, currentDay),
-        bestStreak: genBestStreak(daysCompleted, currentDay),
+    totalCompletions(): number {
+        return this.participant.daysCompleted.length;
     }
-}
 
-export function compareLeaderboardEntries(a: LeaderboardEntryData, b: LeaderboardEntryData) {
-    return b.currentStreak.count - a.currentStreak.count || b.bestStreak - a.bestStreak || b.totalCompletions - a.totalCompletions;
-}
+    getParticipantName(): string {
+        return this.participant.name;
+    }
+
+    constructor(participant: Participant, currentDay: number) {
+        this.participant = participant;
+        this.currentDay = currentDay;
+    }
+};
