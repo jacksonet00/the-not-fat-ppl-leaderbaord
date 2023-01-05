@@ -9,7 +9,7 @@ export type LeaderboardProps = {
 };
 
 function daysBetween(date: Date) {
-    return Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 }
 
 async function fetchChallenge(challengeId: string): Promise<Challenge> {
@@ -47,8 +47,7 @@ export default async function Leaderboard({ params }: LeaderboardProps) {
     const challenge = await fetchChallenge(challengeId);
     const participants = await fetchParticipants(challengeId);
 
-    // let currentDay = daysBetween(challenge!.startDate);
-    let currentDay = 79;
+    let currentDay = daysBetween(challenge!.startDate);
     if (currentDay >= challenge!.dayCount) {
         currentDay = challenge!.dayCount - 1;
     }
