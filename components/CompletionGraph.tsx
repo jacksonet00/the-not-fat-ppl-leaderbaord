@@ -48,8 +48,8 @@ export default function CompletionGraph({ data }: { data: number[]; }) {
                 scales: {
                     y: {
                         display: false,
-                        beginAtZero: true
-
+                        beginAtZero: true,
+                        max: Math.max(...data) + 0.1 * Math.max(...data),
                     },
                     x: {
                         // display: false,
