@@ -124,6 +124,10 @@ export class LeaderboardEntryData {
         return this.participant.name;
     }
 
+    getParticipantId(): string {
+        return this.participant.id;
+    }
+
     getLineChart(): number[] {
         let graph = [];
         let streak = 0;

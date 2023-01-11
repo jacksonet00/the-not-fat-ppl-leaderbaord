@@ -1,6 +1,7 @@
+import { logEvent } from "firebase/analytics";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import LeaderboardEntry from "../../../components/LeaderboardEntry";
-import { db } from "../../../firebase";
+import { db, getAnalyticsSafely } from "../../../firebase";
 import { Challenge, LeaderboardEntryData, Participant } from "../../../types";
 import { daysBetween, genKey } from "../../../util";
 
@@ -46,6 +47,14 @@ export default async function Leaderboard({ params }: LeaderboardProps) {
     let currentDay = daysBetween(challenge!.startDate);
     if (currentDay >= challenge!.dayCount) {
         currentDay = challenge!.dayCount - 1;
+    }
+
+    const analytics = getAnalyticsSafely();
+    if (analytics) {
+        logEvent(analytics, 'page_view', {
+            page_title: `${challenge.name} leaderboard`,
+            page_path: `/leaderboard/${challenge.id}`
+        });
     }
 
     return (

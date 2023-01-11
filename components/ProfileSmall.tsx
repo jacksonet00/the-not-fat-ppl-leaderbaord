@@ -1,11 +1,14 @@
 'use client'
 
+import { logEvent } from "firebase/analytics";
 import Image from 'next/image';
 import { useState } from "react";
+import { getAnalyticsSafely } from "../firebase";
 import CompletionGraph from "./CompletionGraph";
 
 export type ProfileProps = {
     participantName: string;
+    participantId: string;
     currentStreakLength: number;
     currentStreakIncludesToday: boolean;
     bestStreakLength: number;
@@ -16,6 +19,7 @@ export type ProfileProps = {
 
 export default function ProfileSmall({
     participantName,
+    participantId,
     currentStreakLength,
     currentStreakIncludesToday,
     bestStreakLength,
@@ -26,6 +30,14 @@ export default function ProfileSmall({
     const [isShowingGraph, setIsShowingGraph] = useState(false);
 
     function toggleGraph() {
+        const analytics = getAnalyticsSafely();
+        if (analytics) {
+            logEvent(analytics, 'select_content', {
+                content_type: 'graph',
+                item_id: participantId,
+            });
+        }
+
         setIsShowingGraph(!isShowingGraph);
     }
 

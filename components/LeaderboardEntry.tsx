@@ -22,6 +22,7 @@ export default function LeaderboardEntry({ data, index, currentDay }: Leaderboar
                         currentStreakIncludesToday={currentStreak.includesToday}
                         currentStreakLength={currentStreak.length}
                         participantName={data.getParticipantName()}
+                        participantId={data.getParticipantId()}
                         totalCompletions={totalCompletions}
                         lineChart={data.getLineChart()}
                         crown={index === 0}
