@@ -1,38 +1,24 @@
-import { LeaderboardEntryData } from "../types";
+import { LeaderboardData } from "../types";
 import ProfileSmall from "./ProfileSmall";
 import ProgressBars from "./ProgressBars";
 
 type LeaderboardEntryProps = {
-    data: LeaderboardEntryData;
-    index: number;
-    currentDay: number;
+    leaderboardData: LeaderboardData;
+    crown: boolean;
 };
 
-export default function LeaderboardEntry({ data, index, currentDay }: LeaderboardEntryProps) {
-    const bestStreakLength = data.bestStreakLength();
-    const currentStreak = data.currentStreak();
-    const totalCompletions = data.totalCompletions();
-
+export default function LeaderboardEntry({ leaderboardData, crown }: LeaderboardEntryProps) {
     return (
         <div className="pb-4 flex flex-col w-80 mb-4">
             <div>
                 <div className="mb-2">
                     <ProfileSmall
-                        bestStreakLength={bestStreakLength}
-                        currentStreakIncludesToday={currentStreak.includesToday}
-                        currentStreakLength={currentStreak.length}
-                        participantName={data.getParticipantName()}
-                        participantId={data.getParticipantId()}
-                        totalCompletions={totalCompletions}
-                        lineChart={data.getLineChart()}
-                        crown={index === 0}
+                        serializedLeaderboardData={leaderboardData.serialize()}
+                        crown={crown}
                     />
                 </div>
                 <ProgressBars
-                    bestStreakLength={bestStreakLength}
-                    currentStreakLength={currentStreak.length}
-                    totalCompletions={totalCompletions}
-                    currentDay={currentDay}
+                    serializedLeaderboardData={leaderboardData.serialize()}
                 />
             </div>
         </div>

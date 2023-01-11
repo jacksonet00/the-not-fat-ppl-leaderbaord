@@ -2,7 +2,7 @@ import { logEvent } from "firebase/analytics";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import LeaderboardEntry from "../../../components/LeaderboardEntry";
 import { db, getAnalyticsSafely } from "../../../firebase";
-import { Challenge, LeaderboardEntryData, Participant } from "../../../types";
+import { Challenge, LeaderboardData, Participant } from "../../../types";
 import { daysBetween, genKey } from "../../../util";
 
 export type LeaderboardProps = {
@@ -23,17 +23,16 @@ async function fetchParticipants(challengeId: string): Promise<Participant[]> {
 }
 
 function renderLeaderboard(participants: Participant[], currentDay: number) {
-    const leaderboardEntries =
-        participants.map(participant => new LeaderboardEntryData(participant, currentDay));
+    const leaderboardDataEntries =
+        participants.map(participant => new LeaderboardData(participant, currentDay));
 
-    return leaderboardEntries
-        .sort(LeaderboardEntryData.compare)
-        .map((entry, index) => (
+    return leaderboardDataEntries
+        .sort(LeaderboardData.compare)
+        .map((leaderboardData, index) => (
             <LeaderboardEntry
                 key={genKey()}
-                index={index}
-                data={entry}
-                currentDay={currentDay}
+                crown={index === 0}
+                leaderboardData={leaderboardData}
             />
         ));
 }

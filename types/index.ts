@@ -55,105 +55,87 @@ export class Streak {
     }
 }
 
-export class LeaderboardEntryData {
+export interface SerializedLeaderboardData {
+    participantId: string;
+    participantName: string;
+    currentDay: number;
+    lineChart: number[];
+    currentStreakLength: number;
+    currentStreakIncludesToday: boolean;
+    bestStreakLength: number;
+    totalCompletions: number;
+}
+
+export class LeaderboardData {
     private participant: Participant;
     private currentDay: number;
 
-    static compare(a: LeaderboardEntryData, b: LeaderboardEntryData) {
-        return b.currentStreak().length - a.currentStreak().length ||
-                b.bestStreakLength() - a.bestStreakLength() ||
-                b.totalCompletions() - a.totalCompletions();
-    }
-    
-    currentStreak(): Streak {
-        let streak = new Streak();
-        let { daysCompleted } = this.participant;
+    public lineChart: number[];
 
-        if (!daysCompleted.length || daysCompleted.at(-1)! < this.currentDay - 1) {
-            return streak;
-        }
+    public currentStreakLength: number = 0;
+    public currentStreakIncludesToday: boolean = false;
+    public bestStreakLength: number;
+    public totalCompletions: number;
 
-        streak.length = 1;
-
-        if (daysCompleted.at(-1) == this.currentDay) {
-            streak.includesToday = true;
-        }
-
-        if (daysCompleted.length < 2) {
-            return streak;
-        }
-
-        for (let i = daysCompleted.length - 1; i > 0; i--) {
-            if (daysCompleted[i] === daysCompleted[i - 1] + 1) {
-                streak.length += 1;
-            }
-            else {
-                return streak;
-            }
-        }
-
-        return streak;
+    static compare(a: LeaderboardData, b: LeaderboardData) {
+        return Number(b.currentStreakIncludesToday) - Number(a.currentStreakIncludesToday) ||
+                b.currentStreakLength - a.currentStreakLength ||
+                b.bestStreakLength - a.bestStreakLength ||
+                b.totalCompletions - a.totalCompletions;
     }
 
-    bestStreakLength(): number {
-        let { daysCompleted } = this.participant;
-
-        if (!daysCompleted.length) {
-            return 0;
+    public serialize(): SerializedLeaderboardData {
+        return {
+            participantId: this.participant.id,
+            participantName: this.participant.name,
+            currentDay: this.currentDay,
+            currentStreakIncludesToday: this.currentStreakIncludesToday,
+            currentStreakLength: this.currentStreakLength,
+            bestStreakLength: this.bestStreakLength,
+            totalCompletions: this.totalCompletions,
+            lineChart: this.lineChart,
         }
-
-        let curr = 1;
-        let best = curr;
-        for (let i = daysCompleted.length - 1; i > 0; i--) {
-            if (daysCompleted[i] === daysCompleted[i - 1] + 1) {
-                curr += 1;
-                best = Math.max(curr, best);
-            }
-            else {
-                curr = 1;
-            }
-        }
-        return best;
     }
 
-    totalCompletions(): number {
-        return this.participant.daysCompleted.length;
-    }
+    constructor(participant: Participant, currentDay: number) {
+        this.participant = participant;
+        this.currentDay = currentDay;
 
-    getParticipantName(): string {
-        return this.participant.name;
-    }
-
-    getParticipantId(): string {
-        return this.participant.id;
-    }
-
-    getLineChart(): number[] {
         let graph = [];
         let streak = 0;
+        let best = streak;
 
         let i = 0;
         for (let j = 0; j < this.participant.daysCompleted.length; j++) {
             while (i < this.participant.daysCompleted[j]) {
-            streak = 0;
-            graph.push(streak);
-            i++;
+                best = Math.max(streak, best);
+                streak = 0;
+                graph.push(streak);
+                i++;
             }
             streak++;
             graph.push(streak);
             i++;
         }
+        this.bestStreakLength = Math.max(streak, best);
 
         while (i < this.currentDay) {
             graph.push(0);
             i++;
         }
 
-        return graph;
-    }
+        this.lineChart = graph;
 
-    constructor(participant: Participant, currentDay: number) {
-        this.participant = participant;
-        this.currentDay = currentDay;
+        if (participant.daysCompleted.at(-1)! === currentDay) {
+            this.currentStreakLength = this.lineChart.at(-1)!;
+            this.currentStreakIncludesToday = true;
+        }
+
+        if (participant.daysCompleted.at(-1)! === currentDay - 1) {
+            this.currentStreakLength = this.lineChart.at(-2)!;
+        }
+
+        this.bestStreakLength = Math.max(...this.lineChart);
+        this.totalCompletions = participant.daysCompleted.length;
     }
 };

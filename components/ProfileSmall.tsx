@@ -4,38 +4,37 @@ import { logEvent } from "firebase/analytics";
 import Image from 'next/image';
 import { useState } from "react";
 import { getAnalyticsSafely } from "../firebase";
+import { SerializedLeaderboardData } from "../types";
 import CompletionGraph from "./CompletionGraph";
 
 export type ProfileProps = {
-    participantName: string;
-    participantId: string;
-    currentStreakLength: number;
-    currentStreakIncludesToday: boolean;
-    bestStreakLength: number;
-    totalCompletions: number;
-    lineChart: number[];
+    serializedLeaderboardData: SerializedLeaderboardData;
     crown: boolean;
 };
 
 export default function ProfileSmall({
-    participantName,
-    participantId,
-    currentStreakLength,
-    currentStreakIncludesToday,
-    bestStreakLength,
-    totalCompletions,
-    lineChart,
+    serializedLeaderboardData,
     crown,
 }: ProfileProps) {
     const [isShowingGraph, setIsShowingGraph] = useState(false);
 
+    const {
+        participantId,
+        currentStreakIncludesToday,
+        bestStreakLength,
+        currentStreakLength,
+        participantName,
+        totalCompletions,
+        lineChart
+    } = serializedLeaderboardData;
+
     function toggleGraph() {
         const analytics = getAnalyticsSafely();
-        if (analytics) {
+        if (analytics && !isShowingGraph) {
             logEvent(analytics, 'select_content', {
                 content_type: 'graph',
                 item_id: participantId,
-            });
+            })
         }
 
         setIsShowingGraph(!isShowingGraph);

@@ -1,25 +1,38 @@
 'use client';
 
 import { ChakraProvider, Progress } from "@chakra-ui/react";
+import { SerializedLeaderboardData } from "../types";
 
 type ProgressBarsProps = {
-    currentStreakLength: number;
-    bestStreakLength: number;
-    totalCompletions: number;
-    currentDay: number;
+    serializedLeaderboardData: SerializedLeaderboardData;
 };
 
 export default function ProgressBars({
-    currentStreakLength,
-    bestStreakLength,
-    totalCompletions,
-    currentDay,
+    serializedLeaderboardData
 }: ProgressBarsProps) {
+    const {
+        currentStreakLength,
+        currentStreakIncludesToday,
+        bestStreakLength,
+        totalCompletions,
+        currentDay,
+    } = serializedLeaderboardData;
+
     return (
         <ChakraProvider>
-            <Progress colorScheme="yellow" value={(currentStreakLength / currentDay) * 100} />
-            <Progress colorScheme="blue" value={(bestStreakLength / currentDay) * 100} />
-            <Progress colorScheme="gray" value={(totalCompletions / currentDay) * 100} />
+            <Progress
+                colorScheme="yellow"
+                value={(currentStreakLength / currentDay) *
+                    (currentStreakIncludesToday ? 1 : 0) * 100}
+            />
+            <Progress
+                colorScheme="blue"
+                value={(bestStreakLength / currentDay) * 100}
+            />
+            <Progress
+                colorScheme="gray"
+                value={(totalCompletions / currentDay) * 100}
+            />
         </ChakraProvider>
     );
 }
