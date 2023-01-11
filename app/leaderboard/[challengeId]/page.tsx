@@ -23,10 +23,8 @@ async function fetchParticipants(challengeId: string): Promise<Participant[]> {
 }
 
 function renderLeaderboard(participants: Participant[], currentDay: number) {
-    const leaderboardDataEntries =
-        participants.map(participant => new LeaderboardData(participant, currentDay));
-
-    return leaderboardDataEntries
+    return participants
+        .map(participant => new LeaderboardData(participant, currentDay))
         .sort(LeaderboardData.compare)
         .map((leaderboardData, index) => (
             <LeaderboardEntry
