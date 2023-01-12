@@ -1,5 +1,6 @@
 import { logEvent } from "firebase/analytics";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import IconExplainer from "../../../components/IconExplainer";
 import LeaderboardEntry from "../../../components/LeaderboardEntry";
 import { db, getAnalyticsSafely } from "../../../firebase";
 import { Challenge, LeaderboardData, Participant } from "../../../types";
@@ -57,6 +58,9 @@ export default async function Leaderboard({ params }: LeaderboardProps) {
     return (
         <div className="flex items-center justify-center flex-col">
             <h1 className="font-bold underline mb-8">{challenge!.name}: Day #{currentDay + 1}</h1>
+            <div className="w-80 flex flex-col justify-start items-center mb-10">
+                <IconExplainer />
+            </div>
             <div className="w-80 flex flex-col justify-start mb-10">
                 {renderLeaderboard(participants, currentDay)}
             </div>

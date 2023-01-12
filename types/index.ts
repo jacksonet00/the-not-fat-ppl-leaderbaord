@@ -135,7 +135,6 @@ export class LeaderboardData {
             this.currentStreakLength = this.lineChart.at(-1)!;
         }
 
-        this.bestStreakLength = Math.max(...this.lineChart);
         this.totalCompletions = participant.daysCompleted.length;
     }
 };
