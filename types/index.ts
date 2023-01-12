@@ -132,7 +132,7 @@ export class LeaderboardData {
         }
 
         if (participant.daysCompleted.at(-1)! === currentDay - 1) {
-            this.currentStreakLength = this.lineChart.at(-2)!;
+            this.currentStreakLength = this.lineChart.at(-1)!;
         }
 
         this.bestStreakLength = Math.max(...this.lineChart);
