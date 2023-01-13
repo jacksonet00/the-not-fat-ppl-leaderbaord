@@ -100,6 +100,7 @@ export class LeaderboardData {
     constructor(participant: Participant, currentDay: number) {
         this.participant = participant;
         this.currentDay = currentDay;
+        this.totalCompletions = participant.daysCompleted.length;
 
         let graph = [];
         let streak = 0;
@@ -133,7 +134,5 @@ export class LeaderboardData {
         if (participant.daysCompleted.at(-1)! === currentDay - 1) {
             this.currentStreakLength = this.lineChart.at(-1)!;
         }
-
-        this.totalCompletions = participant.daysCompleted.length;
     }
 };
