@@ -122,9 +122,10 @@ export class LeaderboardData {
             graph.push(0);
             i++;
         }
+        best = Math.max(curr, best);
 
         this.lineChart = graph;
-        this.bestStreakLength = Math.max(curr, best);
+        this.bestStreakLength = best;
 
         if (participant.daysCompleted.at(-1)! === currentDay) {
             this.currentStreakLength = this.lineChart.at(-1)!;
