@@ -103,19 +103,19 @@ export class LeaderboardData {
         this.totalCompletions = participant.daysCompleted.length;
 
         let graph = [];
-        let streak = 0;
-        let best = streak;
+        let curr = 0;
+        let best = curr;
 
         let i = 0;
         for (let j = 0; j < this.participant.daysCompleted.length; j++) {
             while (i < this.participant.daysCompleted[j]) {
-                best = Math.max(streak, best);
-                streak = 0;
-                graph.push(streak);
+                best = Math.max(curr, best);
+                curr = 0;
+                graph.push(curr);
                 i++;
             }
-            streak++;
-            graph.push(streak);
+            curr++;
+            graph.push(curr);
             i++;
         }
         while (i < this.currentDay) {
@@ -124,7 +124,7 @@ export class LeaderboardData {
         }
 
         this.lineChart = graph;
-        this.bestStreakLength = Math.max(streak, best);
+        this.bestStreakLength = Math.max(curr, best);
 
         if (participant.daysCompleted.at(-1)! === currentDay) {
             this.currentStreakLength = this.lineChart.at(-1)!;
