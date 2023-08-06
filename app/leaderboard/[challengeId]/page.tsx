@@ -2,9 +2,10 @@ import { logEvent } from "firebase/analytics";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import IconExplainer from "../../../components/IconExplainer";
 import LeaderboardEntry from "../../../components/LeaderboardEntry";
+import TrophyCase from '../../../components/TrophyCase';
 import { db, getAnalyticsSafely } from "../../../firebase";
 import { Challenge, LeaderboardData, Participant } from "../../../types";
-import { daysBetween, genKey } from "../../../util";
+import { genKey } from "../../../util";
 
 export type LeaderboardProps = {
     params: { challengeId: string; },
@@ -23,11 +24,8 @@ async function fetchParticipants(challengeId: string): Promise<Participant[]> {
     return snapshot.docs.map(doc => new Participant(doc));
 }
 
-function renderLeaderboard(participants: Participant[], currentDay: number) {
-    return participants
-        .map(participant => new LeaderboardData(participant, currentDay))
-        .sort(LeaderboardData.compare)
-        .map((leaderboardData, index) => (
+function renderLeaderboard(leaderboard: LeaderboardData[]) {
+    return leaderboard.map((leaderboardData, index) => (
             <LeaderboardEntry
                 key={genKey()}
                 crown={index === 0}
@@ -42,11 +40,6 @@ export default async function Leaderboard({ params }: LeaderboardProps) {
     const challenge = await fetchChallenge(challengeId);
     const participants = await fetchParticipants(challengeId);
 
-    let currentDay = daysBetween(challenge!.startDate);
-    if (currentDay >= challenge!.dayCount) {
-        currentDay = challenge!.dayCount - 1;
-    }
-
     const analytics = getAnalyticsSafely();
     if (analytics) {
         logEvent(analytics, 'page_view', {
@@ -55,14 +48,21 @@ export default async function Leaderboard({ params }: LeaderboardProps) {
         });
     }
 
+    const leaderboard = participants
+        .map(participant => new LeaderboardData(participant, challenge.currentDay()))
+        .sort(LeaderboardData.compare);
+
+    const winners = leaderboard.slice(0, 3).map(leaderboardData => leaderboardData.serialize());
+
+
     return (
         <div className="flex items-center justify-center flex-col">
-            <h1 className="font-bold underline mb-8">{challenge!.name}: Day #{currentDay + 1}</h1>
+            <h1 className="font-bold mb-8">{challenge!.name}: Day #{challenge.currentDay()}{`${challenge.isCompleted() ? ' ✅' : ''}`}</h1>
             <div className="w-80 flex flex-col justify-start items-center mb-10">
-                <IconExplainer />
+                {challenge.isCompleted() ? <TrophyCase winners={winners} /> : <IconExplainer />}
             </div>
             <div className="w-80 flex flex-col justify-start mb-10">
-                {renderLeaderboard(participants, currentDay)}
+                {renderLeaderboard(leaderboard)}
             </div>
         </div>
     );
