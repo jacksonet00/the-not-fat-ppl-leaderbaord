@@ -1,4 +1,5 @@
 import { DocumentData, DocumentSnapshot, Timestamp } from "firebase/firestore";
+import { daysBetween } from '../util';
 
 export interface ChallengeDocument {
     name: string;
@@ -19,6 +20,17 @@ export class Challenge {
         this.name = name;
         this.startDate = startDate.toDate();
         this.dayCount = dayCount;
+    }
+
+    isCompleted(): boolean {
+        return this.startDate.getTime() + this.dayCount * 24 * 60 * 60 * 1000 < Date.now();
+    }
+
+    currentDay() {
+        if (daysBetween(this.startDate) > this.dayCount) {
+            return this.dayCount;
+        }
+        return daysBetween(this.startDate) + 1;
     }
 };
 
